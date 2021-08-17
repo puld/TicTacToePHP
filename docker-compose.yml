@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./hosts:/etc/nginx/conf.d
+      - ./www:/var/www
+      - ./logs:/var/log/nginx
+    links:
+      - php
+
+  php:
+    build: ./images/php
+    volumes:
+      - ./www:/var/www
+    environment:
+      - XDEBUG_CONFIG=remote_autostart=1 default_enable=1 remote_port=9001 remote_host=172.17.0.1 remote_connect_back=1 remote_enable=1 idekey=PHPSTORM profiler_enable=0 profiler_output_dir=/var/cachegrinds profiler_output_name=cachegrind.out.%p profiler_enable_trigger=1 profiler_enable_trigger_value=XDEBUG_PROFILE
+      - PHP_IDE_CONFIG=serverName=cli
